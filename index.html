@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sequencer</title>
+  <style>
+    #seq_cvs {
+      background-color: silver;
+    }
+    #_seqbox {
+      overflow: scroll;
+    }
+  </style>
+</head>
+
+<body bgcolor="white">
+  <center>
+    <h2>Kotoba Sequencer (Test)</h2>
+
+    <script type="text/javascript" src="./seq.js"></script>
+    <script>
+      Seq.Init();
+    </script>
+    <input type="button" id="btn1" value="PLAY" onclick="toggle_seq()">
+    <input type="button" id="btn2" value="Metronome:OFF" onclick="toggle_metronome()"><br>
+    BPM(<label id="bpm">120</label>)<input type="range" id="range1" min="20" max="200" value="120">
+  </center>
+
+  <!-- Toggle -->
+  <script type="text/javascript">
+    var seq_tgl = false;
+    var btn1 = document.getElementById("btn1");
+
+    var seq_tgl2 = false;
+    var btn2 = document.getElementById("btn2");
+
+    var range1 = document.getElementById("range1");
+    var label_bpm = document.getElementById("bpm");
+    range1.addEventListener("input", rangeEvent1, false);
+
+    function toggle_seq(){
+      if(seq_tgl){
+        seq_tgl = false;
+        btn1.value = "PLAY";
+        Seq.Stop();
+      }else {
+        seq_tgl = true;
+        btn1.value = "STOP";
+        Seq.Start();
+      }
+    }
+
+    function toggle_metronome(){
+      if(seq_tgl2){
+        seq_tgl2 = false;
+        btn2.value = "Metronome:ON";
+        Seq.Metronome(false);
+        console.log(seq_tgl2);
+      }else {
+        seq_tgl2 = true;
+        btn2.value = "Metronome:OFF";
+        Seq.Metronome(true);
+        console.log(seq_tgl2);
+      }
+    }
+
+    function rangeEvent1(){
+      label_bpm.innerText = range1.value;
+      Seq.setBPM(range1.value);
+    }
+
+  </script>
+<hr>
+<a href="">Development(Github)</a> / v1.10 - 2018/5/6
+</body>
+
+</html>
