@@ -37,8 +37,9 @@ var Seq = (function() {
   var seq_volume = 0.2;
   var gainNode;
   var clc = false;
+  var prv_time;
 
-  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
   var context;
 
   var nextNotetime;
@@ -135,15 +136,17 @@ var Seq = (function() {
 
   var openContext = function(){
     context = new AudioContext();
+    console.log("Opencontext",context);
     nextNotetime = context.currentTime;
     //Add gainNode
     gainNode = context.createGain();
-    gainNode.connect(context.destination); //To speaker
+    gainNode.connect(context.destination); //Connect to speaker
     gainNode.gain.value = seq_volume; //Set volume
   };
 
   //Play audio data
   var playSound = function(time, id) {
+    prv_time = time;
     var src = context.createBufferSource(); // creates a sound source
     src.buffer = bufferLoader.bufferList[id]; // tell the source which sound to play
     src.connect(gainNode);
@@ -193,7 +196,7 @@ var Seq = (function() {
   //Draw notes and Play sounds
   var drawNotes = function(time, mode) {
     for (var i2 = 0; i2 < 8; i2++) {
-      if(mode == 1) playSound(time, notes[i2][count_loop]);
+      if(mode == 1 && notes[i2][count_loop] != "...") playSound(time, notes[i2][count_loop]);
       for (var i = 0; i < 16; i++) {
         if (notes[i2][i] != "...") {
           ctx.fillStyle = "rgb(" + [73, 0, 204] + ")";
@@ -243,10 +246,10 @@ var Seq = (function() {
 
   //Start Sequencer
   var Start = function() {
+    context.close();
     count_loop = 0;
     count_pos = 1;
     console.log("Start");
-    context.close();
     openContext();
     scheduler();
   };
